@@ -143,7 +143,7 @@ function App() {
       onNavigate={handleNavigate}
     >
       {currentPage ? (
-        <div className="space-y-8">
+        <div className="space-y-8 sm:space-y-10">
           {currentPage.sections.map((section, index) => (
             <SectionRenderer key={index} section={section} />
           ))}
@@ -181,17 +181,17 @@ function Layout({
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100">
-      <header className="border-b border-slate-800 bg-slate-900/70 backdrop-blur">
-        <div className="mx-auto max-w-5xl px-4 py-4 flex items-center justify-between">
+      <header className="sticky top-0 z-40 border-b border-slate-800/60 bg-slate-950/80 backdrop-blur-xl">
+        <div className="mx-auto max-w-5xl px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
           <button
             type="button"
-            className="text-lg font-semibold tracking-tight"
+            className="text-base font-semibold tracking-tight text-slate-50"
             onClick={() => onNavigate('/')}
           >
             {siteName}
           </button>
           {navLinks && navLinks.length > 0 && (
-            <nav className="flex gap-4 text-sm">
+            <nav className="hidden sm:flex gap-3 text-sm text-slate-300">
               {navLinks.map((link) => {
                 const path = slugToPath(link.slug)
                 const isActive = path === currentPath
@@ -201,10 +201,10 @@ function Layout({
                     type="button"
                     onClick={() => handleClick(link.slug)}
                     className={
-                      'px-2 py-1 rounded-md transition-colors ' +
+                      'px-3 py-1.5 rounded-full text-xs font-medium tracking-wide transition-colors ' +
                       (isActive
-                        ? 'bg-slate-100 text-slate-900'
-                        : 'text-slate-200 hover:bg-slate-800')
+                        ? 'bg-indigo-500 text-slate-50 shadow-sm'
+                        : 'text-slate-200 hover:bg-slate-800/80')
                     }
                   >
                     {link.label}
@@ -217,13 +217,15 @@ function Layout({
       </header>
 
       <main className="flex-1">
-        <div className="mx-auto max-w-3xl px-4 py-10">{children}</div>
+        <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+          {children}
+        </div>
       </main>
 
       {footer && (
-        <footer className="border-t border-slate-800 bg-slate-900/70 text-sm">
-          <div className="mx-auto max-w-5xl px-4 py-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-            <div className="text-slate-400">{footer.text}</div>
+        <footer className="border-t border-slate-800/60 bg-slate-950/80 text-xs sm:text-sm">
+          <div className="mx-auto max-w-5xl px-4 sm:px-6 py-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <div className="text-slate-500">{footer.text}</div>
             {footer.links && footer.links.length > 0 && (
               <div className="flex flex-wrap gap-3">
                 {footer.links.map((link) => (
@@ -231,7 +233,7 @@ function Layout({
                     key={link.slug}
                     type="button"
                     onClick={() => handleClick(link.slug)}
-                    className="text-slate-300 hover:text-white"
+                    className="text-slate-300 hover:text-indigo-300 transition-colors"
                   >
                     {link.label}
                   </button>
@@ -251,11 +253,17 @@ function SectionRenderer({ section }: { section: ManifestSection }) {
 
 function Hero({ heading, body }: { heading: string; body: string }) {
   return (
-    <section className="text-center space-y-4">
-      <h1 className="text-3xl font-semibold tracking-tight md:text-4xl">
-        {heading}
-      </h1>
-      <p className="text-slate-300 max-w-2xl mx-auto">{body}</p>
+    <section className="relative overflow-hidden rounded-3xl border border-slate-800/60 bg-slate-900/70 shadow-[0_22px_80px_rgba(15,23,42,0.9)] px-6 py-10 sm:px-10 sm:py-14">
+      <div className="absolute -top-24 right-0 h-48 w-48 rounded-full bg-indigo-500/10 blur-3xl" />
+      <div className="absolute bottom-0 left-0 h-px w-full bg-gradient-to-r from-transparent via-slate-500/40 to-transparent" />
+      <div className="relative mx-auto max-w-2xl text-center space-y-4 sm:space-y-5">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight text-slate-50">
+          {heading}
+        </h1>
+        <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
+          {body}
+        </p>
+      </div>
     </section>
   )
 }
@@ -268,11 +276,17 @@ function TextBlock({
   body?: string
 }) {
   return (
-    <section className="space-y-2">
+    <section className="rounded-2xl border border-slate-800/60 bg-slate-900/60 shadow-sm px-6 py-6 sm:px-8 sm:py-8 space-y-3">
       {heading && (
-        <h2 className="text-xl font-semibold tracking-tight">{heading}</h2>
+        <h2 className="text-lg sm:text-xl font-semibold tracking-tight text-slate-50">
+          {heading}
+        </h2>
       )}
-      {body && <p className="text-slate-300 whitespace-pre-line">{body}</p>}
+      {body && (
+        <p className="text-sm sm:text-base text-slate-300 whitespace-pre-line leading-relaxed">
+          {body}
+        </p>
+      )}
     </section>
   )
 }
@@ -285,12 +299,18 @@ function ImageBlock({
   body?: string
 }) {
   return (
-    <section className="space-y-2 border border-dashed border-slate-800 rounded-lg p-4">
+    <section className="rounded-2xl border border-slate-800/60 bg-slate-900/60 shadow-sm px-6 py-6 sm:px-8 sm:py-8 space-y-4">
       {heading && (
-        <h2 className="text-lg font-semibold tracking-tight">{heading}</h2>
+        <h2 className="text-lg sm:text-xl font-semibold tracking-tight text-slate-50">
+          {heading}
+        </h2>
       )}
-      {body && <p className="text-slate-300">{body}</p>}
-      <div className="h-40 rounded-md bg-slate-900/60 flex items-center justify-center text-slate-500 text-sm">
+      {body && (
+        <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
+          {body}
+        </p>
+      )}
+      <div className="h-40 sm:h-48 rounded-xl border border-dashed border-slate-700/80 bg-slate-900/80 flex items-center justify-center text-slate-500 text-xs sm:text-sm">
         Image placeholder
       </div>
     </section>
@@ -307,14 +327,21 @@ function GenericSection({
   body?: string
 }) {
   return (
-    <section className="space-y-2 border border-slate-800 rounded-lg p-4">
-      <div className="text-xs uppercase tracking-wide text-slate-500">
-        {type}
+    <section className="rounded-2xl border border-slate-800/60 bg-slate-900/60 shadow-sm px-6 py-6 sm:px-8 sm:py-8 space-y-3">
+      <div className="inline-flex items-center gap-2 rounded-full border border-slate-700/80 bg-slate-900/80 px-3 py-1 text-[10px] font-medium uppercase tracking-[0.18em] text-slate-400">
+        <span className="h-1.5 w-1.5 rounded-full bg-indigo-400" />
+        {type.replace('-', ' ')}
       </div>
       {heading && (
-        <h2 className="text-lg font-semibold tracking-tight">{heading}</h2>
+        <h2 className="text-lg sm:text-xl font-semibold tracking-tight text-slate-50">
+          {heading}
+        </h2>
       )}
-      {body && <p className="text-slate-300 whitespace-pre-line">{body}</p>}
+      {body && (
+        <p className="text-sm sm:text-base text-slate-300 whitespace-pre-line leading-relaxed">
+          {body}
+        </p>
+      )}
     </section>
   )
 }
